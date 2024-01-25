@@ -1,0 +1,13 @@
+function CustomEqualizerScript
+    customFreqBands = [1 199; 200 499; 500 999; 1000 4999; 5000 20000];
+    customAttenuations = [1.5 0.5 0.75 1.2 1];
+
+    [audioSample, sampleRate] = audioread('audio_sample.mp3');
+
+    sampleFFT = fft(audioSample, length(audioSample));
+    sampleFreqs = sampleRate * (0:(length(audioSample) / 2) - 1) / length(audioSample);
+
+    processedAudio = CustomEqualizer(audioSample, sampleRate, customFreqBands, customAttenuations);
+
+    % ... (other processing or visualization code)
+end
