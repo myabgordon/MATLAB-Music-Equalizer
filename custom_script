@@ -9,5 +9,5 @@ function CustomEqualizerScript
 
     processedAudio = CustomEqualizer(audioSample, sampleRate, customFreqBands, customAttenuations);
 
-    % ... (other processing or visualization code)
+    % To be continued
 end
