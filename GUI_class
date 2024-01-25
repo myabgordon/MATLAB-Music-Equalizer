@@ -1,0 +1,104 @@
+classdef CustomGUI < matlab.apps.AppBase
+    properties (Access = public)
+        AppFigure matlab.ui.Figure
+        LayoutGrid matlab.ui.container.GridLayout
+        LeftPanelContainer matlab.ui.container.Panel
+
+        AppTitleLabel matlab.ui.control.Label
+        FileNameLabel matlab.ui.control.Label
+        SelectFileButton matlab.ui.control.Button
+
+        Slider1Label matlab.ui.control.Label
+        Slider1 matlab.ui.control.Slider
+        Slider2Label matlab.ui.control.Label
+        Slider2 matlab.ui.control.Slider
+        Slider3Label matlab.ui.control.Label
+        Slider3 matlab.ui.control.Slider
+        Slider4Label matlab.ui.control.Label
+        Slider4 matlab.ui.control.Slider
+        Slider5Label matlab.ui.control.Label
+        Slider5 matlab.ui.control.Slider
+
+        ComputeButton matlab.ui.control.Button
+        PlayButton matlab.ui.control.Button
+        PlaybarSlider matlab.ui.control.Slider
+
+        RightPanelContainer matlab.ui.container.Panel
+        WaveformAxes1 matlab.ui.control.UIAxes
+        WaveformAxes2 matlab.ui.control.UIAxes
+        FftAxes1 matlab.ui.control.UIAxes
+        FftAxes2 matlab.ui.control.UIAxes
+    end
+
+    properties (Access = private)
+        onePanelWidth = 576;
+        inputFileAudio
+        processedAudio
+        audioRate
+        audioPlayer
+        attenuations = [1 1 1 1 1]
+    end
+
+    methods (Access = private)
+        function updateLayout(app, ~)
+            currentFigureWidth = app.AppFigure.Position(3);
+            if(currentFigureWidth <= app.onePanelWidth)
+                app.LayoutGrid.RowHeight = {382, 382};
+                app.LayoutGrid.ColumnWidth = {'1x'};
+                app.RightPanelContainer.Layout.Row = 2;
+                app.RightPanelContainer.Layout.Column = 1;
+            else
+                app.LayoutGrid.RowHeight = {'1x'};
+                app.LayoutGrid.ColumnWidth = {331, '1x'};
+                app.RightPanelContainer.Layout.Row = 1;
+                app.RightPanelContainer.Layout.Column = 2;
+            end
+        end
+
+        function createComponents(app)
+            app.AppFigure = uifigure('Visible', 'off');
+            app.AppTitleLabel = uilabel(app.LeftPanelContainer);
+            app.FileNameLabel = uilabel(app.LeftPanelContainer);
+            app.SelectFileButton = uibutton(app.LeftPanelContainer, 'push');
+            app.Slider1Label = uilabel(app.LeftPanelContainer);
+            app.Slider1 = uislider(app.LeftPanelContainer);
+            app.Slider2Label = uilabel(app.LeftPanelContainer);
+            app.Slider2 = uislider(app.LeftPanelContainer);
+            app.Slider3Label = uilabel(app.LeftPanelContainer);
+            app.Slider3 = uislider(app.LeftPanelContainer);
+            app.Slider4Label = uilabel(app.LeftPanelContainer);
+            app.Slider4 = uislider(app.LeftPanelContainer);
+            app.Slider5Label = uilabel(app.LeftPanelContainer);
+            app.Slider5 = uislider(app.LeftPanelContainer);
+            app.ComputeButton = uibutton(app.LeftPanelContainer, 'push');
+            app.PlayButton = uibutton(app.LeftPanelContainer, 'push');
+            app.PlaybarSlider = uislider(app.LeftPanelContainer);
+            app.RightPanelContainer = uipanel(app.LayoutGrid);
+            app.WaveformAxes1 = uiaxes(app.RightPanelContainer);
+            app.WaveformAxes2 = uiaxes(app.RightPanelContainer);
+            app.FftAxes1 = uiaxes(app.RightPanelContainer);
+            app.FftAxes2 = uiaxes(app.RightPanelContainer);
+
+            % ... (other UI setup)
+
+            sliders = [app.Slider1, app.Slider2, app.Slider3, app.Slider4, app.Slider5];
+            labels = [app.Slider1Label, app.Slider2Label, app.Slider3Label, app.Slider4Label, app.Slider5Label];
+
+            for i = 1:length(sliders)
+                sliders(i).ValueChangedFcn = @app.sliderChanged;
+                sliders(i).Enable = 'off';
+            end
+        end
+    end
+
+    methods (Access = public)
+        function app = CustomGUI
+            createComponents(app);
+            % ... (other setup)
+        end
+
+        function delete(app)
+            delete(app.AppFigure);
+        end
+    end
+end
