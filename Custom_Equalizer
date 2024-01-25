@@ -1,0 +1,27 @@
+function newAudio = CustomEqualizer(audio, rate, freqBands, attenuations)
+    assert(length(attenuations) == length(freqBands), 'Mismatched lengths of attenuations and frequency bands.');
+
+    audio = audio(:, 1);
+
+    audioFFT = fft(audio, length(audio));
+
+    newFFT = audioFFT;
+    for i = 1:length(freqBands)
+        lowerFreq = freqBands(i, 1);
+        upperFreq = freqBands(i, 2);
+        newFFT = adjustFrequencyBand(newFFT, rate, lowerFreq, upperFreq, attenuations(i));
+    end
+
+    newAudio = real(ifft(newFFT, length(audio)));
+end
+
+function adjustedFFT = adjustFrequencyBand(fft, rate, lowerFreq, upperFreq, attenuation)
+    assert(rate > 0, 'Sampling rate must be greater than 0.');
+
+    for i = ceil(lowerFreq / rate * length(fft)):1:ceil(upperFreq / rate * length(fft))
+        fft(i) = attenuation * fft(i);
+        fft(length(fft) - i) = attenuation * fft(length(fft) - i);
+    end
+
+    adjustedFFT = fft;
+end
